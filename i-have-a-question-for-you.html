@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Will you be my Godparent?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #EDE6D8; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100dvh;
+  }
+  #app {
+    width: 100%;
+    max-width: 480px;
+    background: #EFE9DC;
+    min-height: 100dvh;
+    position: relative;
+    overflow: hidden;
+  }
+  button { cursor: pointer; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes popIn { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+
+  .screen { min-height: 100dvh; }
+  .fade-up { animation: fadeUp .6s ease both; }
+  .pop-in { animation: popIn .5s cubic-bezier(.2,1.4,.4,1) both; }
+
+  /* ---- Opening screen ---- */
+  .screen-opening {
+    position: relative;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .screen-opening img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    position: absolute; inset: 0;
+  }
+  .screen-opening .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(30,42,58,0.1) 30%, rgba(28,38,52,0.95) 100%);
+  }
+  .screen-opening .copy {
+    position: absolute; left: 24px; right: 24px;
+    bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+  .screen-opening .eyebrow {
+    color: var(--accent);
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 20px; letter-spacing: 0.5px;
+  }
+  .screen-opening .headline {
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif; font-weight: 600;
+    font-size: 38px; line-height: 1.1; margin-top: 4px;
+  }
+  .btn-primary-light {
+    margin-top: 26px; width: 100%; padding: 16px; border: none; border-radius: 14px;
+    background: #fff; color: #2B2118; font-size: 15.5px; font-weight: 700;
+    letter-spacing: 0.3px; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ---- Invite screen ---- */
+  .screen-invite {
+    position: relative; height: 100dvh; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .screen-invite .hero { position: relative; height: 220px; flex: none; }
+  .screen-invite .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .screen-invite .hero .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(30,42,58,0) 55%, rgba(28,38,52,0.75) 100%);
+  }
+  .screen-invite .body {
+    flex: 1; overflow-y: auto; padding: 22px 24px calc(28px + env(safe-area-inset-bottom));
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .card-white {
+    background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #E4DAC2;
+  }
+  .card-white .salutation {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #6B5E42;
+  }
+  .card-white p { font-size: 14.5px; line-height: 1.65; color: #42392A; margin: 10px 0 0; }
+
+  .card-event {
+    background: var(--accent); border-radius: 16px; padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .card-event .title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 20px; color: #fff; }
+  .card-event .row { display: flex; gap: 12px; align-items: flex-start; }
+  .card-event .label { color: #fff; font-size: 13px; font-weight: 700; width: 60px; flex: none; }
+  .card-event .value { color: rgba(255,255,255,0.94); font-size: 13.5px; font-weight: 500; }
+
+  .btn-primary-dark {
+    margin-top: 4px; width: 100%; padding: 16px; border: none; border-radius: 14px;
+    background: #2B2118; color: #F5EFE1; font-size: 15.5px; font-weight: 700;
+    letter-spacing: 0.3px; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ---- RSVP screen ---- */
+  .screen-rsvp {
+    height: 100dvh; display: flex; flex-direction: column;
+    padding: calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));
+  }
+  .btn-back {
+    align-self: flex-start; border: none; background: none; color: #6B5E42;
+    font-size: 14px; font-weight: 600; padding: 8px 0; font-family: 'DM Sans', sans-serif;
+  }
+  .screen-rsvp .prompt { margin-top: 18px; }
+  .screen-rsvp .kicker { font-family: 'Cormorant Garamond', serif; font-style: italic; color: #8A7B5C; font-size: 16px; }
+  .screen-rsvp .question { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: #2B2118; font-size: 26px; margin-top: 2px; line-height: 1.2; }
+  .screen-rsvp p { font-size: 14px; line-height: 1.6; color: #5A4F3B; margin-top: 10px; }
+  .rsvp-actions { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .btn-accept {
+    width: 100%; padding: 18px; border: none; border-radius: 14px; background: var(--accent);
+    color: #fff; font-size: 16px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-decline {
+    width: 100%; padding: 18px; border: 1px solid #C9BCA0; border-radius: 14px; background: transparent;
+    color: #6B5E42; font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ---- Confirmation screen ---- */
+  .screen-confirmed {
+    height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 32px calc(0px + env(safe-area-inset-bottom)); text-align: center;
+  }
+  .badge {
+    width: 76px; height: 76px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .badge span { color: #fff; font-size: 34px; line-height: 1; }
+  .screen-confirmed .title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 26px; color: #2B2118; margin-top: 22px; }
+  .screen-confirmed .body-text { font-size: 14.5px; line-height: 1.7; color: #5A4F3B; margin-top: 10px; }
+  .gift-card {
+    width: 100%; background: #fff; border-radius: 16px; padding: 18px 20px; margin-top: 20px;
+    border: 1px solid #E4DAC2; text-align: left;
+  }
+  .gift-card .heading {
+    font-size: 12.5px; letter-spacing: 1.2px; text-transform: uppercase; color: #8A7B5C; font-weight: 700;
+  }
+  .gift-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .gift-item { font-size: 14px; color: #42392A; display: flex; align-items: center; gap: 10px; }
+  .gift-item img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; background: #F3ECD9; }
+  .btn-return {
+    margin-top: 26px; padding: 14px 26px; border: none; border-radius: 12px;
+    background: #2B2118; color: #F5EFE1; font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ---- Invalid-link notice ---- */
+  .screen-invalid {
+    height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 32px; text-align: center;
+  }
+  .screen-invalid .title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 22px; color: #2B2118; }
+  .screen-invalid p { font-size: 14px; line-height: 1.6; color: #5A4F3B; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

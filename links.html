@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Godparent invitation links</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 20px; color: #2B2118; }
+  h1 { font-size: 20px; }
+  ul { list-style: none; padding: 0; }
+  li { margin: 10px 0; padding: 12px 14px; background: #F5EFE1; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  a { color: #2B2118; text-decoration: none; font-weight: 600; }
+  button { border: none; background: #2B2118; color: #F5EFE1; border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Each godparent's personal invitation link</h1>
+<p>Not part of the invitation itself — just a page for you to grab each link and send it.</p>
+<ul id="list"></ul>
+<script src="config.js"></script>
+<script>
+  const list = document.getElementById('list');
+  const base = new URL('i-have-a-question-for-you.html', window.location.href);
+  Object.entries(CONFIG.recipients).forEach(([slug, name]) => {
+    const url = new URL(base);
+    url.searchParams.set('to', slug);
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="${url}" target="_blank">${name}</a><button data-url="${url}">Copy</button>`;
+    list.appendChild(li);
+  });
+  list.addEventListener('click', (e) => {
+    const url = e.target.dataset?.url;
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(() => {
+      e.target.textContent = 'Copied!';
+      setTimeout(() => (e.target.textContent = 'Copy'), 1200);
+    });
+  });
+</script>
+</body>
+</html>
