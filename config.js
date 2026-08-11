@@ -24,6 +24,7 @@ const CONFIG = {
     trisha:    'Tita Trisha',
     marithell: 'Tita Marithell',
     rianne:    'Tita Rianne',
+    krisdel:   'Tita Krisdel',
   },
 
   giftIdeas: [
