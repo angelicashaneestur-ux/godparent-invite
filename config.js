@@ -25,6 +25,19 @@ const CONFIG = {
     marithell: 'Tita Marithell',
     rianne:    'Tita Rianne',
     krisdel:   'Tita Krisdel',
+
+    gemark:    'Tito Gemark',
+    archie:    'Tito Archie',
+    bien:      'Tito Bien',
+    angelo:    'Tito Angelo',
+    tyrone:    'Tito Tyrone',
+    ar:        'Tito Ar',
+    robert:    'Tito Robert',
+    pongay:    'Boss Pongay',
+    keanu:     'Tito Keanu',
+    mak:       'Tito Mak',
+    markie:    'Tito Markie',
+    macky:     'Tito Macky',
   },
 
   giftIdeas: [
@@ -33,5 +46,6 @@ const CONFIG = {
     { label: 'Clothes',                  img: 'assets/gift-clothes.png' },
     { label: 'Wet Wipes (Moose Gear)',   img: 'assets/gift-wipes.png' },
     { label: 'LOVE',                     img: 'assets/gift-love.png' },
+    { label: 'Toys',                     img: 'assets/gift-toys.png' },
   ],
 };
