@@ -72,7 +72,7 @@
     return `
       <div class="screen screen-photo-bg">
         ${photoGrid(['assets/invite-bg-1.jpg', 'assets/invite-bg-2.jpg', 'assets/invite-bg-3.jpg'])}
-        <div style="position:relative; flex:1; overflow-y:auto; padding:36px 24px calc(28px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:18px;">
+        <div class="scroll-content" style="padding:36px 24px calc(28px + env(safe-area-inset-bottom)); gap:18px;">
           <div class="card-white fade-up" style="animation-delay:.1s">
             <div class="salutation">Dear ${selectedName},</div>
             <p class="msg-text">Hi, it's me, ${CONFIG.event.childName}! I may be little, but I already know I want you by my side. Will you be my Godparent at my christening?</p>
@@ -91,24 +91,26 @@
 
   function screenRsvp() {
     return `
-      <div class="screen screen-photo-bg" style="padding:calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));">
+      <div class="screen screen-photo-bg">
         ${photoGrid(['assets/rsvp-bg-1.jpg', 'assets/rsvp-bg-2.jpg', 'assets/rsvp-bg-3.jpg'])}
-        <button style="position:relative; align-self:flex-start; border:none; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="backToInvite">&larr; Back</button>
+        <div class="scroll-content" style="padding:calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));">
+          <button style="align-self:flex-start; border:none; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="backToInvite">&larr; Back</button>
 
-        <div class="card-white fade-up" style="margin-top:18px;">
-          <div class="kicker">Dear ${selectedName}</div>
-          <div class="question">So, will you?</div>
-          <p class="rsvp-text">I'd love to know if you can stand by me as my Godparent on ${CONFIG.event.eventDate}.</p>
-        </div>
+          <div class="card-white fade-up" style="margin-top:18px;">
+            <div class="kicker">Dear ${selectedName}</div>
+            <div class="question">So, will you?</div>
+            <p class="rsvp-text">I'd love to know if you can stand by me as my Godparent on ${CONFIG.event.eventDate}.</p>
+          </div>
 
-        <div class="card-white" style="margin-top:20px;">
-          <div style="font-size:13px; font-weight:700; color:#2B2118;">How many will be attending, including you?</div>
-          <input type="number" min="1" value="${state.guestCount}" data-action="guestCount" style="width:100%; margin-top:8px; padding:12px 14px; border-radius:10px; border:1px solid #D8CDB4; font-family:'DM Sans', sans-serif; font-size:15px; font-weight:600; color:#2B2118; box-sizing:border-box;" />
-        </div>
+          <div class="card-white" style="margin-top:20px;">
+            <div style="font-size:13px; font-weight:700; color:#2B2118;">How many will be attending, including you?</div>
+            <input type="number" min="1" value="${state.guestCount}" data-action="guestCount" style="width:100%; margin-top:8px; padding:12px 14px; border-radius:10px; border:1px solid #D8CDB4; font-family:'DM Sans', sans-serif; font-size:15px; font-weight:600; color:#2B2118; box-sizing:border-box;" />
+          </div>
 
-        <div style="position:relative; margin-top:20px; display:flex; flex-direction:column; gap:14px;">
-          <button class="btn-accept" data-action="accept">Yes, I'd be honored</button>
-          <button class="btn-decline-solid" data-action="decline">I'm unable to attend</button>
+          <div style="margin-top:20px; display:flex; flex-direction:column; gap:14px;">
+            <button class="btn-accept" data-action="accept">Yes, I'd be honored</button>
+            <button class="btn-decline-solid" data-action="decline">I'm unable to attend</button>
+          </div>
         </div>
       </div>`;
   }
@@ -150,17 +152,19 @@
       : '';
 
     return `
-      <div class="screen screen-photo-bg" style="align-items:center; justify-content:center; padding:0 32px calc(0px + env(safe-area-inset-bottom)); text-align:center;">
+      <div class="screen screen-photo-bg">
         ${photoGrid(['assets/confirm-bg-1.jpg','assets/confirm-bg-2.jpg','assets/confirm-bg-3.jpg','assets/confirm-bg-4.jpg','assets/confirm-bg-5.jpg','assets/confirm-bg-6.jpg','assets/confirm-bg-7.jpg','assets/confirm-bg-8.jpg'], 2)}
-        <div class="badge pop-in" style="position:relative; background:${confirmColor}"><span>${confirmGlyph}</span></div>
-        <div class="card-white fade-up" style="margin-top:22px; animation-delay:.1s;">
-          <div class="title" style="margin-top:0;">${confirmTitle}</div>
-          <p class="body-text">${confirmBody}</p>
-        </div>
-        ${detailsHtml}
-        <div style="position:relative; display:flex; gap:12px; margin-top:26px;">
-          <button style="padding:14px 22px; border:none; border-radius:12px; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; font-family:'DM Sans', sans-serif;" data-action="backToInvite">Back to Invitation</button>
-          ${receptionBtn}
+        <div class="scroll-content" style="align-items:center; padding:32px 32px calc(32px + env(safe-area-inset-bottom)); text-align:center;">
+          <div class="badge pop-in" style="background:${confirmColor}"><span>${confirmGlyph}</span></div>
+          <div class="card-white fade-up" style="margin-top:22px; animation-delay:.1s;">
+            <div class="title" style="margin-top:0;">${confirmTitle}</div>
+            <p class="body-text">${confirmBody}</p>
+          </div>
+          ${detailsHtml}
+          <div style="display:flex; gap:12px; margin-top:26px;">
+            <button style="padding:14px 22px; border:none; border-radius:12px; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; font-family:'DM Sans', sans-serif;" data-action="backToInvite">Back to Invitation</button>
+            ${receptionBtn}
+          </div>
         </div>
       </div>`;
   }
@@ -177,7 +181,7 @@
         <button class="btn-back" style="position:absolute; top:20px; left:24px; z-index:2;" data-action="backToConfirmed">&larr; Back</button>
         <button style="position:absolute; top:20px; right:24px; z-index:2; border:none; background:rgba(255,255,255,0.9); color:#2B2118; font-size:13px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="goToClosing">Next &rarr;</button>
 
-        <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:88px 32px 40px;">
+        <div class="scroll-content" style="align-items:center; padding:88px 32px calc(40px + env(safe-area-inset-bottom));">
           <div style="background:rgba(255,255,255,0.92); border-radius:14px; padding:8px 20px; font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:600; font-size:34px; color:#1c2634;">Location Guide</div>
           <div style="background:rgba(255,255,255,0.92); border-radius:10px; padding:5px 14px; font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color:${CONFIG.event.accentColor}; font-weight:700; margin-top:10px;">The Race to Celebrate</div>
 

@@ -71,8 +71,12 @@
     position: relative; height: 100dvh; overflow: hidden;
     display: flex; flex-direction: column;
   }
+  .scroll-content {
+    position: relative; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    display: flex; flex-direction: column;
+  }
   .card-white {
-    position: relative;
+    position: relative; width: 100%; box-sizing: border-box;
     background: rgba(255,255,255,0.94); border-radius: 16px; padding: 20px; border: 1px solid #E4DAC2;
   }
   .salutation { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #6B5E42; }
