@@ -12,6 +12,11 @@ const CONFIG = {
     eventTime: '10:00 AM',
     venue: 'St. Jude Thaddeus Parish, Legazpi',
     accentColor: '#5A7B99',
+    // Path/URL to a background music track (mp3). Starts on the "Open Invitation"
+    // tap (browsers require a user gesture before audio can play) and loops
+    // through the rest of the site with a small mute button. Leave blank to
+    // disable — no button will show at all.
+    backgroundMusicUrl: 'assets/musicinmedia-piano-for-babies-60-seconds-359367.mp3',
     arriveNote: 'Please be at the Church 30 minutes before the said Christening for the seminar and orientation of Priest.',
     dressCode: 'We kindly encourage all guest to come in comfortable casual outfits.',
     colorCodes: [

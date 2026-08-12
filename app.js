@@ -18,6 +18,37 @@
 
   const state = { screen: 'opening', guestCount: 1 };
 
+  let musicAudio = null;
+  let musicMuted = false;
+  let musicBtn = null;
+  const ICON_SOUND_ON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="#fff"/><path d="M16.5 8.5a5 5 0 010 7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M19 6a9 9 0 010 12" stroke="#fff" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></svg>';
+  const ICON_SOUND_OFF = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="#fff"/><path d="M16 9l5 6M21 9l-5 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+  function ensureMusicButton() {
+    if (musicBtn || !CONFIG.event.backgroundMusicUrl) return;
+    musicBtn = document.createElement('button');
+    musicBtn.setAttribute('aria-label', 'Toggle background music');
+    musicBtn.style.cssText = 'position:fixed; bottom:calc(18px + env(safe-area-inset-bottom)); right:18px; z-index:1000; width:42px; height:42px; border-radius:50%; border:none; cursor:pointer; background:rgba(30,24,16,0.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,0.25);';
+    musicBtn.innerHTML = ICON_SOUND_ON;
+    musicBtn.addEventListener('click', () => {
+      if (!musicAudio) return;
+      musicMuted = !musicMuted;
+      musicAudio.muted = musicMuted;
+      musicBtn.innerHTML = musicMuted ? ICON_SOUND_OFF : ICON_SOUND_ON;
+    });
+    document.body.appendChild(musicBtn);
+  }
+
+  function startMusic() {
+    if (!CONFIG.event.backgroundMusicUrl || musicAudio) return;
+    ensureMusicButton();
+    musicAudio = new Audio(CONFIG.event.backgroundMusicUrl);
+    musicAudio.loop = true;
+    musicAudio.volume = 0.4;
+    musicAudio.play().catch(() => {});
+    if (musicBtn) musicBtn.style.display = 'flex';
+  }
+
   function goTo(screen) {
     state.screen = screen;
     render();
@@ -234,7 +265,7 @@
   app.addEventListener('click', (e) => {
     const action = e.target.closest('[data-action]')?.dataset.action;
     if (!action) return;
-    if (action === 'goToInvite') goTo('invite');
+    if (action === 'goToInvite') { startMusic(); goTo('invite'); }
     else if (action === 'goToRsvp') goTo('rsvp');
     else if (action === 'backToInvite') goTo('invite');
     else if (action === 'accept') submitRsvp('accepted');
