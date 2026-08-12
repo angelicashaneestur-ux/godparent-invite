@@ -16,7 +16,7 @@
   app.style.setProperty('--accent', CONFIG.event.accentColor);
   document.title = `Will you be ${CONFIG.event.childName}'s Godparent?`;
 
-  const state = { screen: 'opening' };
+  const state = { screen: 'opening', guestCount: 1 };
 
   function goTo(screen) {
     state.screen = screen;
@@ -33,6 +33,7 @@
           name: selectedName,
           slug,
           response,
+          guestCount: state.guestCount,
           timestamp: new Date().toISOString(),
         }),
       }).catch(() => {
@@ -40,6 +41,18 @@
       });
     }
     goTo(response === 'accepted' ? 'confirmed-accept' : 'confirmed-decline');
+  }
+
+  function photoGrid(images, cols, tint) {
+    const rows = cols ? Math.ceil(images.length / cols) : images.length;
+    const gridStyle = cols
+      ? `grid-template-columns:${'1fr '.repeat(cols).trim()}; grid-template-rows:${'1fr '.repeat(rows).trim()};`
+      : `grid-template-rows:${'1fr '.repeat(images.length).trim()};`;
+    return `
+      <div style="position:absolute; inset:0; display:grid; ${gridStyle}">
+        ${images.map(src => `<img src="${src}" alt="${CONFIG.event.childName}" style="width:100%; height:100%; object-fit:cover; display:block;" />`).join('')}
+      </div>
+      <div style="position:absolute; inset:0; background:${tint || 'rgba(239,233,220,0.3)'};"></div>`;
   }
 
   function screenOpening() {
@@ -57,15 +70,13 @@
 
   function screenInvite() {
     return `
-      <div class="screen screen-invite">
-        <div class="hero">
-          <img src="assets/baby-photo-2.jpg" alt="${CONFIG.event.childName}">
-          <div class="scrim"></div>
-        </div>
-        <div class="body">
+      <div class="screen screen-photo-bg">
+        ${photoGrid(['assets/invite-bg-1.jpg', 'assets/invite-bg-2.jpg', 'assets/invite-bg-3.jpg'])}
+        <div style="position:relative; flex:1; overflow-y:auto; padding:36px 24px calc(28px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:18px;">
           <div class="card-white fade-up" style="animation-delay:.1s">
             <div class="salutation">Dear ${selectedName},</div>
-            <p>Hi, it's me, ${CONFIG.event.childName}! I may be little, but I already know I want you by my side. Will you be my Godparent at my christening?</p>
+            <p class="msg-text">Hi, it's me, ${CONFIG.event.childName}! I may be little, but I already know I want you by my side. Will you be my Godparent at my christening?</p>
+            <p class="sub-text">We're celebrating my 1st birthday together with my christening!</p>
           </div>
           <div class="card-event fade-up" style="animation-delay:.15s">
             <div class="title">${CONFIG.event.childName}'s Christening</div>
@@ -73,23 +84,31 @@
             <div class="row"><div class="label">Time</div><div class="value">${CONFIG.event.eventTime}</div></div>
             <div class="row"><div class="label">Venue</div><div class="value">${CONFIG.event.venue}</div></div>
           </div>
-          <button class="btn-primary-dark fade-up" style="animation-delay:.2s" data-action="goToRsvp">RSVP Now</button>
+          <button class="btn-primary-dark fade-up" style="animation-delay:.2s" data-action="goToRsvp">Give Your Answer</button>
         </div>
       </div>`;
   }
 
   function screenRsvp() {
     return `
-      <div class="screen screen-rsvp">
-        <button class="btn-back" data-action="backToInvite">&larr; Back</button>
-        <div class="prompt fade-up">
+      <div class="screen screen-photo-bg" style="padding:calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom));">
+        ${photoGrid(['assets/rsvp-bg-1.jpg', 'assets/rsvp-bg-2.jpg', 'assets/rsvp-bg-3.jpg'])}
+        <button style="position:relative; align-self:flex-start; border:none; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="backToInvite">&larr; Back</button>
+
+        <div class="card-white fade-up" style="margin-top:18px;">
           <div class="kicker">Dear ${selectedName}</div>
           <div class="question">So, will you?</div>
-          <p>I'd love to know if you can stand by me as my Godparent on ${CONFIG.event.eventDate}.</p>
+          <p class="rsvp-text">I'd love to know if you can stand by me as my Godparent on ${CONFIG.event.eventDate}.</p>
         </div>
-        <div class="rsvp-actions">
+
+        <div class="card-white" style="margin-top:20px;">
+          <div style="font-size:13px; font-weight:700; color:#2B2118;">How many will be attending, including you?</div>
+          <input type="number" min="1" value="${state.guestCount}" data-action="guestCount" style="width:100%; margin-top:8px; padding:12px 14px; border-radius:10px; border:1px solid #D8CDB4; font-family:'DM Sans', sans-serif; font-size:15px; font-weight:600; color:#2B2118; box-sizing:border-box;" />
+        </div>
+
+        <div style="position:relative; margin-top:20px; display:flex; flex-direction:column; gap:14px;">
           <button class="btn-accept" data-action="accept">Yes, I'd be honored</button>
-          <button class="btn-decline" data-action="decline">I'm unable to attend</button>
+          <button class="btn-decline-solid" data-action="decline">I'm unable to attend</button>
         </div>
       </div>`;
   }
@@ -98,29 +117,101 @@
     const confirmColor = accepted ? CONFIG.event.accentColor : '#B08B5A';
     const confirmGlyph = accepted ? '✓' : '♥';
     const confirmTitle = accepted ? 'Yay, thank you!' : "That's okay";
+    const guestPhrase = state.guestCount == 1 ? 'just you' : `plus ${state.guestCount - 1} more`;
     const confirmBody = accepted
-      ? `I'm so happy you said yes, ${selectedName}! Can't wait to have you by my side on ${CONFIG.event.eventDate} at ${CONFIG.event.venue}.`
+      ? `I'm so happy you said yes, ${selectedName}! Can't wait to have you (${guestPhrase}) by my side on ${CONFIG.event.eventDate} at ${CONFIG.event.venue}.`
       : `Thank you for letting me know, ${selectedName}. I'll miss having you there, but I understand — I still love you either way.`;
 
-    const giftHtml = accepted ? `
+    const detailsHtml = accepted ? `
+      <div class="card-note fade-up" style="animation-delay:.18s">
+        <p style="font-size:13px; line-height:1.6; color:#42392A; margin:0; font-style:italic;">${CONFIG.event.arriveNote}</p>
+        <div style="margin-top:8px;">
+          <div style="font-size:13px; color:#42392A; font-style:italic;">Color code:</div>
+          <div style="display:flex; gap:8px; margin-top:6px;">
+            ${CONFIG.event.colorCodes.map(c => `<img src="${c.img}" alt="${c.label}" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:1px solid rgba(0,0,0,0.08);" />`).join('')}
+          </div>
+        </div>
+        <p style="font-size:13px; line-height:1.6; color:#42392A; margin:8px 0 0; font-style:italic;">${CONFIG.event.dressCode}</p>
+      </div>
+
       <div class="gift-card fade-up" style="animation-delay:.2s">
-        <div class="heading">If you'd like to bring a gift</div>
-        <div class="gift-list">
+        <div class="heading">Your presence is enough, but if you'd like to bring a gift, here are some ideas:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;">
           ${CONFIG.giftIdeas.map(g => `
-            <div class="gift-item">
-              <img src="${g.img}" alt="${g.label}">
+            <div style="width:calc(50% - 6px); font-size:13px; color:#42392A; display:flex; align-items:center; gap:8px;">
+              <img src="${g.img}" alt="${g.label}" style="width:36px; height:36px; border-radius:8px; object-fit:cover; flex:none; background:#F3ECD9;" />
               ${g.label}
             </div>`).join('')}
         </div>
       </div>` : '';
 
+    const receptionBtn = accepted
+      ? `<button class="btn-primary-dark" style="position:relative; width:auto; padding:14px 22px; margin-top:0;" data-action="goToReception">Reception Details</button>`
+      : '';
+
     return `
-      <div class="screen screen-confirmed">
-        <div class="badge pop-in" style="background:${confirmColor}"><span>${confirmGlyph}</span></div>
-        <div class="title fade-up" style="animation-delay:.1s">${confirmTitle}</div>
-        <p class="body-text fade-up" style="animation-delay:.15s">${confirmBody}</p>
-        ${giftHtml}
-        <button class="btn-return" data-action="backToInvite">Back to Invitation</button>
+      <div class="screen screen-photo-bg" style="align-items:center; justify-content:center; padding:0 32px calc(0px + env(safe-area-inset-bottom)); text-align:center;">
+        ${photoGrid(['assets/confirm-bg-1.jpg','assets/confirm-bg-2.jpg','assets/confirm-bg-3.jpg','assets/confirm-bg-4.jpg','assets/confirm-bg-5.jpg','assets/confirm-bg-6.jpg','assets/confirm-bg-7.jpg','assets/confirm-bg-8.jpg'], 2)}
+        <div class="badge pop-in" style="position:relative; background:${confirmColor}"><span>${confirmGlyph}</span></div>
+        <div class="card-white fade-up" style="margin-top:22px; animation-delay:.1s;">
+          <div class="title" style="margin-top:0;">${confirmTitle}</div>
+          <p class="body-text">${confirmBody}</p>
+        </div>
+        ${detailsHtml}
+        <div style="position:relative; display:flex; gap:12px; margin-top:26px;">
+          <button style="padding:14px 22px; border:none; border-radius:12px; background:rgba(255,255,255,0.9); color:#6B5E42; font-size:14px; font-weight:600; font-family:'DM Sans', sans-serif;" data-action="backToInvite">Back to Invitation</button>
+          ${receptionBtn}
+        </div>
+      </div>`;
+  }
+
+  function screenReception() {
+    return `
+      <div class="screen screen-photo-bg screen-reception">
+        ${photoGrid(['assets/reception-bg.jpg', 'assets/reception-bg-2.jpg', 'assets/reception-bg-3.jpg'], null, 'rgba(244,238,224,0.3)')}
+        <div class="checker-corner checker-corner--tl"></div>
+        <div class="checker-corner checker-corner--tr"></div>
+        <div class="checker-corner checker-corner--bl"></div>
+        <div class="checker-corner checker-corner--br"></div>
+
+        <button class="btn-back" style="position:absolute; top:20px; left:24px; z-index:2;" data-action="backToConfirmed">&larr; Back</button>
+        <button style="position:absolute; top:20px; right:24px; z-index:2; border:none; background:rgba(255,255,255,0.9); color:#2B2118; font-size:13px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="goToClosing">Next &rarr;</button>
+
+        <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:88px 32px 40px;">
+          <div style="background:rgba(255,255,255,0.92); border-radius:14px; padding:8px 20px; font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:600; font-size:34px; color:#1c2634;">Location Guide</div>
+          <div style="background:rgba(255,255,255,0.92); border-radius:10px; padding:5px 14px; font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color:${CONFIG.event.accentColor}; font-weight:700; margin-top:10px;">The Race to Celebrate</div>
+
+          <div class="stop-card" style="margin-top:44px;">
+            <img src="assets/church-photo.jpg" alt="Church" style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid ${CONFIG.event.accentColor}; margin-bottom:8px;" />
+            <div class="stop-time">🏁 ${CONFIG.event.eventTime}</div>
+            <div class="stop-name">${CONFIG.event.venue}</div>
+            <div class="stop-label">Christening Ceremony</div>
+          </div>
+
+          <div class="dashed-connector"></div>
+
+          <div class="stop-card">
+            <img src="${CONFIG.event.reception.logo}" alt="${CONFIG.event.reception.name}" style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid ${CONFIG.event.accentColor}; margin-bottom:8px; background:#fff;" />
+            <div class="stop-time">🏁 ${CONFIG.event.reception.time}</div>
+            <div class="stop-name">${CONFIG.event.reception.name}</div>
+            <div class="stop-label">Reception</div>
+          </div>
+
+          <div class="reception-note">${CONFIG.event.reception.note}</div>
+        </div>
+      </div>`;
+  }
+
+  function screenClosing() {
+    return `
+      <div class="screen screen-closing">
+        <img src="assets/closing-photo.jpg" alt="${CONFIG.event.childName}">
+        <div class="scrim"></div>
+        <button style="position:absolute; top:20px; left:24px; border:none; background:rgba(255,255,255,0.9); color:#2B2118; font-size:14px; font-weight:600; padding:8px 14px; border-radius:10px; font-family:'DM Sans', sans-serif;" data-action="backToReception">&larr; Back</button>
+        <div class="closing-copy">
+          <div class="closing-signoff">Love,</div>
+          <div class="closing-name">${CONFIG.event.childName}</div>
+        </div>
       </div>`;
   }
 
@@ -131,6 +222,8 @@
       case 'rsvp': app.innerHTML = screenRsvp(); break;
       case 'confirmed-accept': app.innerHTML = screenConfirmed(true); break;
       case 'confirmed-decline': app.innerHTML = screenConfirmed(false); break;
+      case 'reception': app.innerHTML = screenReception(); break;
+      case 'closing': app.innerHTML = screenClosing(); break;
     }
   }
 
@@ -142,6 +235,16 @@
     else if (action === 'backToInvite') goTo('invite');
     else if (action === 'accept') submitRsvp('accepted');
     else if (action === 'decline') submitRsvp('declined');
+    else if (action === 'goToReception') goTo('reception');
+    else if (action === 'backToConfirmed') goTo('confirmed-accept');
+    else if (action === 'goToClosing') goTo('closing');
+    else if (action === 'backToReception') goTo('reception');
+  });
+
+  app.addEventListener('change', (e) => {
+    if (e.target.dataset.action === 'guestCount') {
+      state.guestCount = Math.max(1, parseInt(e.target.value, 10) || 1);
+    }
   });
 
   render();

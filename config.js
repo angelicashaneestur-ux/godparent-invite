@@ -10,8 +10,22 @@ const CONFIG = {
     childName: 'John Eli Sebastian',
     eventDate: 'September 5, 2026',
     eventTime: '10:00 AM',
-    venue: 'St. Jude Parish, Legazpi',
+    venue: 'St. Jude Thaddeus Parish, Legazpi',
     accentColor: '#5A7B99',
+    arriveNote: 'Please be at the Church 30 minutes before the said Christening for the seminar and orientation of Priest.',
+    dressCode: 'We kindly encourage all guest to come in comfortable casual outfits.',
+    colorCodes: [
+      { label: 'Light Blue',   img: 'assets/color-light-blue.png' },
+      { label: 'White',        img: 'assets/color-white.png' },
+      { label: 'Dirty White',  img: 'assets/color-dirty-white.png' },
+      { label: 'Powder Blue',  img: 'assets/color-powder-blue.png' },
+    ],
+    reception: {
+      time: '11:00 AM - 3:00 PM',
+      name: 'Lola Felings Restaurant',
+      logo: 'assets/restaurant-logo.png',
+      note: "Your presence means the world to us, see you at the reception!",
+    },
   },
 
   // Each godparent gets her own link: i-have-a-question-for-you.html?to=<slug>
@@ -46,6 +60,6 @@ const CONFIG = {
     { label: 'Clothes',                  img: 'assets/gift-clothes.png' },
     { label: 'Wet Wipes (Moose Gear)',   img: 'assets/gift-wipes.png' },
     { label: 'LOVE',                     img: 'assets/gift-love.png' },
-    { label: 'Toys',                     img: 'assets/gift-toys.png' },
+    { label: 'Toddler Toys',             img: 'assets/gift-toys.jpg' },
   ],
 };
