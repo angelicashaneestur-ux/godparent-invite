@@ -4,7 +4,7 @@
 const CONFIG = {
   // Paste the "Web app URL" you get after deploying rsvp-backend/Code.gs
   // (see rsvp-backend/README.md). Leave blank to disable RSVP recording.
-  rsvpEndpoint: '',
+  rsvpEndpoint: 'https://script.google.com/macros/s/AKfycbxg6xSXGSbejulcEg7UPTfnGftjB7X-kMgIhQT_DoTFvkG-3NTCUMdA9P4Wol6lBRvW/exec',
 
   event: {
     childName: 'John Eli Sebastian',
